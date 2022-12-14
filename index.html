@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Swolekat's OBS Youtube Playlist Title</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: sans-serif;
+        }
+        body, html {
+            margin: 0;
+            padding: 0;
+        }
+
+        iframe {
+            height: 0;
+            width: 0;
+            padding: 0;
+            margin: 0;
+        }
+
+        .author {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .title {
+            font-size: 48px;
+        }
+    </style>
+</head>
+<body>
+<div id="author" class="author"></div>
+<div id="title" class="title"></div>
+<div id="player" class="player"></div>
+<script>
+    const player = document.getElementById('player');
+    const title = document.getElementById('title');
+    const author = document.getElementById('author');
+
+    const loadVideo = () => {
+        const videoUrl = window.location.href;
+        const queryParameters = videoUrl.split('?')[1];
+        const queryString = new URLSearchParams(queryParameters);
+        const playlistId = queryString.get('list');
+        const volume = queryString.get('volume');
+
+        const tag = document.createElement('script');
+
+        tag.src = "https://www.youtube.com/iframe_api";
+        document.body.appendChild(tag);
+
+        const onPlayerReady = (event) => {
+            youtubePlayer.loadPlaylist({list: playlistId, listType: 'playlist'});
+            youtubePlayer.setLoop(true);
+            event.target.setVolume(volume || 100);
+            event.target.playVideo();
+        };
+
+        const onPlayerStateChange = () => {
+            const videoData = youtubePlayer.getVideoData();
+            if(!videoData.title){
+                return;
+            }
+            title.innerHTML = videoData.title;
+            author.innerHTML = videoData.author;
+        };
+
+        let youtubePlayer;
+        window.onYouTubeIframeAPIReady = () => {
+            youtubePlayer = new YT.Player('player', {
+                height: '0',
+                width: '0',
+                playerVars: {
+                    autoplay: 1,
+                    controls: 0,
+                    playsinline: 1
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange,
+                }
+            });
+            youtubePlayer.h.attributes.sandbox.value = "allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation";
+        }
+    };
+
+    loadVideo();
+</script>
+</body>
+</html>
