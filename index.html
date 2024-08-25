@@ -11,6 +11,9 @@
         body, html {
             margin: 0;
             padding: 0;
+            height: 100%;
+            width: 100%;
+            position: relative;
         }
 
         iframe {
@@ -28,11 +31,29 @@
         .title {
             font-size: 48px;
         }
+
+        .player {
+            height: 0;
+            width: 0;
+        }
+
+        .player.show {
+            height: 100%;
+            width: 100%;
+        }
+
+        .info-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
     </style>
 </head>
 <body>
-<div id="author" class="author"></div>
-<div id="title" class="title"></div>
+<div class="info-content">
+    <div id="author" class="author"></div>
+    <div id="title" class="title"></div>
+</div>
 <div id="player" class="player"></div>
 <script>
     const player = document.getElementById('player');
@@ -45,11 +66,17 @@
         const queryString = new URLSearchParams(queryParameters);
         const playlistId = queryString.get('list');
         const volume = queryString.get('volume');
+        const showVideo = queryString.get('video') === 'true';
+        if(showVideo){
+            const playerElement = document.getElementById('player');
+            playerElement.className = 'player show';
+        }
 
         const tag = document.createElement('script');
 
         tag.src = "https://www.youtube.com/iframe_api";
         document.body.appendChild(tag);
+
 
         const onPlayerReady = (event) => {
             youtubePlayer.loadPlaylist({list: playlistId, listType: 'playlist'});
@@ -70,8 +97,8 @@
         let youtubePlayer;
         window.onYouTubeIframeAPIReady = () => {
             youtubePlayer = new YT.Player('player', {
-                height: '0',
-                width: '0',
+                height: showVideo ? '1080' : '0',
+                width: showVideo ? '1920' : '0',
                 playerVars: {
                     autoplay: 1,
                     controls: 0,
