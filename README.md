@@ -11,7 +11,7 @@ In our example it will look like https://swolekat.github.io/obs-youtube-playlist
 
 If you want to change the volume via the url you can append `&volume=num` where num is a value from 0 to 100 inclusive.
 
-If you want to show the video via the url you can append `&video=true`. The video will take up 100% of the browser.
+If you want to show the video via the url you can append `&video=true`. The video will take up 100% of the browser. If you are running into issues try to disable hardware acceleration on the browser source.
 
 You'll then take this url and put it in OBS as a browser source. The size doesn't matter too much, but I'd just make it 1920x1080 in case of a long title.
 
