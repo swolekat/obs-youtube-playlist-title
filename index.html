@@ -47,11 +47,16 @@
             position: absolute;
             top: 0;
             left: 0;
+            opacity: 1;
+            transition: all 0.5s ease;
+        }
+        .info-content.hide {
+            opacity: 0;
         }
     </style>
 </head>
 <body>
-<div class="info-content">
+<div class="info-content" id="info-content">
     <div id="author" class="author"></div>
     <div id="title" class="title"></div>
 </div>
@@ -60,6 +65,8 @@
     const player = document.getElementById('player');
     const title = document.getElementById('title');
     const author = document.getElementById('author');
+    const infoContent = document.getElementById('info-content');
+    const SHOW_DURATION = 10000;
 
     const loadVideo = () => {
         const videoUrl = window.location.href;
@@ -68,6 +75,7 @@
         const playlistId = queryString.get('list');
         const volume = queryString.get('volume');
         const showVideo = queryString.get('video') === 'true';
+        const animateTitle = queryString.get('animate') === 'true';
         if(showVideo){
             const playerElement = document.getElementById('player');
             playerElement.className = 'player show';
@@ -93,6 +101,15 @@
             }
             title.innerHTML = videoData.title;
             author.innerHTML = videoData.author;
+            if(animateTitle){
+                setTimeout(() => {
+                    infoContent.className = 'info-content';
+                    setTimeout(() => {
+                        infoContent.className = 'info-content hide';
+                    }, SHOW_DURATION);
+                }, 0);
+            }
+
         };
 
         let youtubePlayer;
